@@ -8,38 +8,75 @@ datasource db {
 }
 
 model Patient {
-  id        String   @id @default(cuid())
-  code      String   @unique @db.VarChar(6)
-  name      String?  
-  entries   Entry[]
-  createdAt DateTime @default(now())
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  name          String?
+  role          String    @default("USER")        // ADMIN, USER
+  
+  // Infos médicales (Flexible : DOB, Gender, Allergies...)
+  profile       Json?     @db.JsonB
+  
+  // Préférences (Theme, Notifs...)
+  settings      Json?     @db.JsonB
+  
+  emailVerified DateTime? // Sécurité : Date de validation
+  termsAccepted DateTime? // Legal : Date acceptation CGU
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt              // Sync offline indispensable
+  deletedAt     DateTime? // Soft delete
+
+  entries       Entry[]
 }
 
 model Category {
-  id    String @id @default(cuid())
-  name  String @unique 
-  tools Tool[]
+  id        String   @id @default(cuid())
+  name      String   @unique
+  order     Int      @default(0)              // Tri affichage
+  
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  
+  tools     Tool[]
 }
 
 model Tool {
   id          String    @id @default(cuid())
   name        String    
   categoryId  String
-  type        String    
+  type        String    // NOTE_GENERAL, AUDIO, PHOTO
   config      Json?     @db.JsonB
   isFree      Boolean   @default(true)
+  order       Int       @default(0)           // Tri dans le module
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime? // Soft delete
+  
   category    Category  @relation(fields: [categoryId], references: [id])
   entries     Entry[]
   
   @@unique([name, categoryId])
+  @@index([categoryId])
 }
 
 model Entry {
-  id        String   @id @default(cuid())
-  patientId String
-  toolId    String
-  data      Json     @db.JsonB 
-  createdAt DateTime @default(now())
-  patient   Patient  @relation(fields: [patientId], references: [id])
-  tool      Tool     @relation(fields: [toolId], references: [id])
+  id          String    @id @default(cuid())
+  patientId   String
+  toolId      String
+  data        Json      @db.JsonB
+  
+  // Date réelle de l'événement (Symptôme ressenti à 14h, saisi à 18h)
+  measuredAt  DateTime  @default(now())
+  
+  createdAt   DateTime  @default(now()) // Date technique d'insertion
+  updatedAt   DateTime  @updatedAt      // Sync offline
+  deletedAt   DateTime? // Soft delete sync
+  
+  patient     Patient   @relation(fields: [patientId], references: [id])
+  tool        Tool      @relation(fields: [toolId], references: [id])
+
+  @@index([patientId])
+  @@index([toolId])
 }
