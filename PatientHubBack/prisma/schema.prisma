@@ -30,6 +30,8 @@ model Tool {
   isFree      Boolean   @default(true)
   category    Category  @relation(fields: [categoryId], references: [id])
   entries     Entry[]
+  
+  @@unique([name, categoryId])
 }
 
 model Entry {
