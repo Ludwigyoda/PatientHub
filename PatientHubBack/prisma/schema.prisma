@@ -14,18 +14,18 @@ model Patient {
   name          String?
   role          String    @default("USER")        // ADMIN, USER
   
-  // Infos médicales (Flexible : DOB, Gender, Allergies...)
+
   profile       Json?     @db.JsonB
   
-  // Préférences (Theme, Notifs...)
+  
   settings      Json?     @db.JsonB
   
-  emailVerified DateTime? // Sécurité : Date de validation
-  termsAccepted DateTime? // Legal : Date acceptation CGU
+  emailVerified DateTime? 
+  termsAccepted DateTime? 
   
   createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt              // Sync offline indispensable
-  deletedAt     DateTime? // Soft delete
+  updatedAt     DateTime  @updatedAt              
+  deletedAt     DateTime? 
 
   entries       Entry[]
 }
@@ -33,7 +33,7 @@ model Patient {
 model Category {
   id        String   @id @default(cuid())
   name      String   @unique
-  order     Int      @default(0)              // Tri affichage
+  order     Int      @default(0)              
   
   updatedAt DateTime @updatedAt
   deletedAt DateTime?
@@ -45,14 +45,14 @@ model Tool {
   id          String    @id @default(cuid())
   name        String    
   categoryId  String
-  type        String    // NOTE_GENERAL, AUDIO, PHOTO
+  type        String   
   config      Json?     @db.JsonB
   isFree      Boolean   @default(true)
-  order       Int       @default(0)           // Tri dans le module
+  order       Int       @default(0)           
   
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime? // Soft delete
+  deletedAt   DateTime? 
   
   category    Category  @relation(fields: [categoryId], references: [id])
   entries     Entry[]
@@ -67,12 +67,12 @@ model Entry {
   toolId      String
   data        Json      @db.JsonB
   
-  // Date réelle de l'événement (Symptôme ressenti à 14h, saisi à 18h)
+  
   measuredAt  DateTime  @default(now())
   
-  createdAt   DateTime  @default(now()) // Date technique d'insertion
-  updatedAt   DateTime  @updatedAt      // Sync offline
-  deletedAt   DateTime? // Soft delete sync
+  createdAt   DateTime  @default(now()) 
+  updatedAt   DateTime  @updatedAt      
+  deletedAt   DateTime? 
   
   patient     Patient   @relation(fields: [patientId], references: [id])
   tool        Tool      @relation(fields: [toolId], references: [id])
