@@ -1,42 +1,73 @@
-import prisma from "../lib/prisma";
+import prisma from "../lib/prisma.js";
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import { generateToken } from "../utils/jwt.utils.js";
 
-const JWT_SECRET = process.env.JWT_SECRET || 'secret_key_BOB';
-
-export async function registerService(email, password, name) {
-    const existing = await prisma.patient.findUnique({ where: { email } });
-    if (existing) throw new Error("votre Email est déja utilisé");
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const patient = await prisma.patient.create({
-        data: {
-            email,
-            password: hashedPassword,
-            name,
-            role: "USER",
-            emailVerified: new Date(),
-            termsAccepted: new Date(),
+const AuthService = {
+    registerService: async (email, password, name) => {
+        const existing = await prisma.patient.findUnique({ where: { email } });
+        if (existing) {
+            throw new Error("Un utilisateur existe déjà avec cet email");
         }
-    })
 
-    const token = jwt.sign({ id: patient.id, role: patient.role }, JWT_SECRET);
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-    const { password: _, ...cleanPatient } = patient;
+        const newPatient = await prisma.patient.create({
+            data: {
+                email,
+                password: hashedPassword,
+                name,
+                role: "USER", // Default role
+                emailVerified: new Date(), // Auto-verify for now as per previous logic
+                termsAccepted: new Date(),
+            }
+        });
 
-    return { patient: cleanPatient, token };
-}
+        const token = await generateToken({
+            id: newPatient.id,
+            username: newPatient.name,
+            role: newPatient.role
+        });
 
-export async function loginService(email, password) {
-    const patient = await prisma.patient.findUnique({ where: { email } });
-    if (!patient) throw new Error("Email ou Mot de passe incorrect");
+        const { password: _, ...cleanPatient } = newPatient;
+        return { patient: cleanPatient, token };
+    },
 
+    loginService: async (email, password) => {
+        const patient = await prisma.patient.findUnique({ where: { email } });
+        if (!patient) {
+            throw new Error("Pas d'utilisateur trouvé avec cet email");
+        }
 
-    const match = await bcrypt.compare(password, patient.password);
-    if (!match) throw new Error("Email ou Mot de passe incorrect");
+        const match = await bcrypt.compare(password, patient.password);
+        if (!match) {
+            throw new Error("Le mot de passe est incorrect");
+        }
 
-    const token = jwt.sign({ id: patient.id, role: patient.role }, JWT_SECRET);
-    const { password: _, ...cleanPatient } = patient;
-    return { patient: cleanPatient, token };
-}
+        const token = await generateToken({
+            id: patient.id,
+            username: patient.name,
+            role: patient.role
+        });
+
+        const { password: _, ...cleanPatient } = patient;
+        return { patient: cleanPatient, token };
+    },
+
+    updatePasswordService: async (id, newPassword) => {
+        const patient = await prisma.patient.findUnique({ where: { id } });
+        if (!patient) {
+            throw new Error("Utilisateur introuvable");
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        await prisma.patient.update({
+            where: { id },
+            data: { password: hashedPassword }
+        });
+
+        return { message: "Mot de passe mis à jour avec succès" };
+    }
+};
+
+export default AuthService;
