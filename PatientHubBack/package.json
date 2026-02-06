@@ -4,6 +4,8 @@
   "description": "Backend API PatientHub - Suivi santé grand public",
   "type": "module",
   "main": "src/app.js",
+  "author": "ludwig",
+  "license": "ISC",
   "scripts": {
     "dev": "node src/app.js",
     "prisma:generate": "prisma generate",
@@ -17,15 +19,13 @@
     "tracking",
     "offline-first"
   ],
-  "author": "ludwig",
-  "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^7.3.0",
+    "@prisma/client": "^5.22.0",
     "cors": "^2.8.6",
     "dotenv": "^17.2.4",
     "express": "^5.2.1"
   },
   "devDependencies": {
-    "prisma": "^7.3.0"
+    "prisma": "^5.22.0"
   }
 }
