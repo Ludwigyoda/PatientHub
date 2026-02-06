@@ -1,0 +1,31 @@
+{
+  "name": "patienthubback",
+  "version": "1.0.0",
+  "description": "Backend API PatientHub - Suivi santé grand public",
+  "type": "module",
+  "main": "src/app.js",
+  "scripts": {
+    "dev": "node src/app.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev --name init",
+    "prisma:studio": "prisma studio",
+    "seed": "node src/services/seed.service.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "health",
+    "tracking",
+    "offline-first"
+  ],
+  "author": "ludwig",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^7.3.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.4",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "prisma": "^7.3.0"
+  }
+}
