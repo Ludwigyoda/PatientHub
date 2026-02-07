@@ -1,21 +1,74 @@
-import prisma from "../lib/prisma";
+import prisma from "../lib/prisma.js";
+import bcrypt from 'bcrypt';
 
-export async function getProfileService(patientId) {
-    const patient = await prisma.patient.findUnique({
-        where: { id: patientId },
-        select: {
-            id: true,
-            email: true,
-            name: true,
-            role: true,
-            profile: true,
-            settings: true,
-            emailVerified: true,
-            termsAccepted: true,
-            createdAt: true,
-            updatedAt: true,
+const PatientService = {
+    getAll: async () => {
+        return prisma.patient.findMany({
+            where: { deletedAt: null },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                role: true,
+                createdAt: true
+            }
+        });
+    },
+
+    getOne: async (id) => {
+        const patient = await prisma.patient.findUnique({
+            where: { id },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                role: true,
+                profile: true,
+                settings: true,
+                emailVerified: true,
+                termsAccepted: true,
+                createdAt: true,
+                updatedAt: true,
+                deletedAt: true
+            }
+        });
+
+        if (!patient) throw new Error("Patient non trouvé");
+        if (patient.deletedAt) throw new Error("Compte supprimé");
+
+        return patient;
+    },
+
+    update: async (id, data) => {
+        const { name, email, password, profile, settings } = data;
+        const updateData = {};
+
+        if (name !== undefined) updateData.name = name.trim();
+        if (email !== undefined) updateData.email = email.trim();
+        if (profile !== undefined) updateData.profile = profile;
+        if (settings !== undefined) updateData.settings = settings;
+        if (password) {
+            updateData.password = await bcrypt.hash(password, 10);
         }
-    });
-    if (!patient) throw new Error("Patient non trouvé");
-}
-return patient
+
+        return prisma.patient.update({
+            where: { id },
+            data: updateData,
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                updatedAt: true
+            }
+        });
+    },
+
+    remove: async (id) => {
+        return prisma.patient.update({
+            where: { id },
+            data: { deletedAt: new Date() }
+        });
+    }
+};
+
+export default PatientService;

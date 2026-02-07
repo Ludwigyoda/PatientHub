@@ -2,6 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import authRouter from './routes/auth.route.js';
 import categoryRouter from './routes/category.route.js';
+import toolRouter from './routes/tool.route.js';
+import patientRouter from './routes/patient.route.js';
+import entryRouter from './routes/entry.route.js';
 
 const app = express();
 
@@ -10,6 +13,9 @@ app.use(express.json());
 
 app.use('/auth', authRouter);
 app.use('/categories', categoryRouter);
+app.use('/tools', toolRouter);
+app.use('/patients', patientRouter);
+app.use('/entries', entryRouter);
 
 app.get('/', (req, res) => {
     res.json({ message: "PatientHub Back API is running" });
