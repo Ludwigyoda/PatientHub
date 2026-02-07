@@ -16,8 +16,8 @@ const AuthService = {
                 email,
                 password: hashedPassword,
                 name,
-                role: "USER", // Default role
-                emailVerified: new Date(), // Auto-verify for now as per previous logic
+                role: "USER",
+                emailVerified: new Date(),
                 termsAccepted: new Date(),
             }
         });

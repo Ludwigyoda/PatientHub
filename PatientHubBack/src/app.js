@@ -7,10 +7,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Mount routes
 app.use('/auth', authRouter);
 
-// Health check
 app.get('/', (req, res) => {
     res.json({ message: "PatientHub Back API is running" });
 });
