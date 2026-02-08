@@ -10,29 +10,6 @@ const ToolService = {
         });
     },
 
-    getForPatient: async (patientId) => {
-        const patient = await prisma.patient.findUnique({
-            where: { id: patientId },
-            select: { settings: true }
-        });
-
-        const settings = patient?.settings || {};
-        const activeCategoryIds = settings.activeCategoryIds || [];
-
-        // On retourne les outils "Libres" (gratuits) + ceux des modules activés par le patient
-        return prisma.tool.findMany({
-            where: {
-                deletedAt: null,
-                OR: [
-                    { isFree: true },
-                    { categoryId: { in: activeCategoryIds } }
-                ]
-            },
-            orderBy: { order: "asc" },
-            include: { category: true }
-        });
-    },
-
     getOne: async (id) => {
         const tool = await prisma.tool.findFirst({
             where: { id, deletedAt: null },

@@ -1,13 +1,12 @@
-import express from 'express';
-import ToolController from '../controllers/tool.controller.js';
-import { authenticateToken } from '../middleware/auth.middleware.js';
+import { Router } from "express";
+import ToolController from "../controllers/tool.controller.js";
 
-const router = express.Router();
+const toolRouter = Router();
 
-router.get('/', authenticateToken, ToolController.getAll);
-router.get('/:id', authenticateToken, ToolController.getOne);
-router.post('/', authenticateToken, ToolController.create);
-router.put('/:id', authenticateToken, ToolController.update);
-router.delete('/:id', authenticateToken, ToolController.remove);
+toolRouter.get("/", ToolController.getAll);
+toolRouter.get("/:id", ToolController.getOne);
+toolRouter.post("/", ToolController.create);
+toolRouter.put("/:id", ToolController.update);
+toolRouter.delete("/:id", ToolController.remove);
 
-export default router;
+export default toolRouter;

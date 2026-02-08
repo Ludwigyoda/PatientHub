@@ -5,7 +5,6 @@ import categoryRouter from './routes/category.route.js';
 import toolRouter from './routes/tool.route.js';
 import patientRouter from './routes/patient.route.js';
 import entryRouter from './routes/entry.route.js';
-import newsRouter from './routes/news.route.js';
 
 const app = express();
 
