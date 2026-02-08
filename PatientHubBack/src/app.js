@@ -5,6 +5,7 @@ import categoryRouter from './routes/category.route.js';
 import toolRouter from './routes/tool.route.js';
 import patientRouter from './routes/patient.route.js';
 import entryRouter from './routes/entry.route.js';
+import newsRouter from './routes/news.route.js';
 
 const app = express();
 
@@ -16,9 +17,10 @@ app.use('/categories', categoryRouter);
 app.use('/tools', toolRouter);
 app.use('/patients', patientRouter);
 app.use('/entries', entryRouter);
+app.use('/news', newsRouter);
 
 app.get('/', (req, res) => {
-    res.json({ message: "PatientHub Back API is running" });
+    res.json({ message: "PatientHub est lancée" });
 });
 
 const PORT = process.env.PORT || 3000;
