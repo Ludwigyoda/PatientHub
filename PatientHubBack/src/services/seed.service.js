@@ -1,167 +1,93 @@
 import prisma from '../lib/prisma.js';
 
-async function seed() {
-    console.log('Démarrage seed database...');
+/**
+ * Script de remplissage de la base de données (Seed)
+ * Permet de créer les catégories et outils par défaut pour PatientHub.
+ */
+async function runSeed() {
+    console.log('--- Initialisation des données ---');
 
-    const modules = [
-        {
-            name: 'Post-Opératoire',
-            tools: [
-                {
-                    name: 'Douleur',
-                    type: 'NOTE_GENERAL',
-                    config: {
-                        description: "Suivez l'évolution de votre douleur post-opératoire",
-                        patientInfo: "Notez votre douleur plusieurs fois par jour, surtout après les repas ou l'activité physique",
-                        fields: [
-                            { type: 'slider', label: 'Intensité', min: 0, max: 10 },
-                            { type: 'text', label: 'Localisation', placeholder: 'Zone concernée' },
-                            { type: 'text', label: 'Notes', placeholder: 'Contexte, déclencheurs...' }
-                        ]
-                    }
-                },
-                {
-                    name: 'Plaie',
-                    type: 'PHOTO',
-                    config: {
-                        description: 'Photographiez votre plaie pour suivre la cicatrisation',
-                        patientInfo: "Prenez la photo au même angle et à la même distance. L'overlay vous aide à comparer avec la photo précédente",
-                        overlayPrevious: true,
-                        overlayOpacity: 0.5,
-                        allowDrag: true,
-                        showTimeline: true
-                    }
-                },
-                {
-                    name: 'Toux analyser',
-                    type: 'AUDIO',
-                    config: {
-                        description: 'Enregistrez votre toux pour suivi respiratoire',
-                        patientInfo: 'Enregistrez 2-3 quintes de toux. Essayez de rester dans un environnement calme',
-                        maxDuration: 30,
-                        showWaveform: true
-                    }
-                },
-                {
-                    name: 'Médicaments',
-                    type: 'NOTE_GENERAL',
-                    config: {
-                        description: 'Suivez vos prises de médicaments',
-                        patientInfo: 'Notez chaque prise pour éviter les oublis ou doubles doses',
-                        fields: [
-                            { type: 'text', label: 'Nom', placeholder: 'Médicament' },
-                            { type: 'text', label: 'Dosage', placeholder: '500mg' },
-                            { type: 'text', label: 'Heure', placeholder: '08:00' }
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            name: 'Chirurgie',
-            tools: [
-                {
-                    name: 'Cicatrice',
-                    type: 'PHOTO',
-                    config: {
-                        description: "Suivez l'évolution de votre cicatrice",
-                        patientInfo: "Photographiez votre cicatrice 1 fois par semaine, toujours dans les mêmes conditions d'éclairage",
-                        overlayPrevious: true,
-                        overlayOpacity: 0.5,
-                        analyzeRedness: true
-                    }
-                },
-                {
-                    name: 'Drain',
-                    type: 'NOTE_GENERAL',
-                    config: {
-                        description: "Notez le volume et l'aspect du drain",
-                        patientInfo: "Mesurez le volume drainé à chaque vidange. Signalez tout changement d'aspect ou d'odeur",
-                        fields: [
-                            { type: 'text', label: 'Volume', placeholder: 'ml' },
-                            { type: 'text', label: 'Aspect', placeholder: 'Couleur, texture' }
-                        ]
-                    }
-                },
-                {
-                    name: 'Pansement',
-                    type: 'NOTE_GENERAL',
-                    config: {
-                        description: "Notez l'état de votre pansement",
-                        patientInfo: "Vérifiez le pansement 2 fois par jour. Changez-le si humide ou décollé",
-                        fields: [
-                            { type: 'text', label: 'Type', placeholder: 'Compresses, hydrogel...' },
-                            { type: 'text', label: 'État', placeholder: 'Propre, suintant...' }
-                        ]
-                    }
-                }
-            ]
+    // 1. Catégorie Post-Op (Les outils indispensables après une chirurgie)
+    const postOp = await prisma.category.upsert({
+        where: { name: 'Post-Opératoire' },
+        update: {},
+        create: { name: 'Post-Opératoire' }
+    });
+
+    await prisma.tool.upsert({
+        where: { name_categoryId: { name: 'Douleur', categoryId: postOp.id } },
+        update: {},
+        create: {
+            name: 'Douleur',
+            categoryId: postOp.id,
+            type: 'NOTE_GENERAL',
+            isFree: false,
+            config: {
+                info: "Notez votre niveau de douleur (0 à 10).",
+                placeholder: "Où avez-vous mal précisément ?"
+            }
         }
-    ];
+    });
 
-    const allTools = [];
-
-    for (const module of modules) {
-        const category = await prisma.category.upsert({
-            where: { name: module.name },
-            update: {},
-            create: { name: module.name }
-        });
-
-        for (const toolData of module.tools) {
-            await prisma.tool.upsert({
-                where: {
-                    name_categoryId: {
-                        name: toolData.name,
-                        categoryId: category.id
-                    }
-                },
-                update: {},
-                create: {
-                    ...toolData,
-                    categoryId: category.id,
-                    isFree: false
-                }
-            });
-
-            allTools.push(toolData);
+    await prisma.tool.upsert({
+        where: { name_categoryId: { name: 'Plaie', categoryId: postOp.id } },
+        update: {},
+        create: {
+            name: 'Plaie',
+            categoryId: postOp.id,
+            type: 'PHOTO',
+            isFree: false,
+            config: {
+                info: "Prenez une photo de votre pansement ou cicatrice.",
+                overlay: true
+            }
         }
-    }
+    });
 
-    const libreCategory = await prisma.category.upsert({
+    await prisma.tool.upsert({
+        where: { name_categoryId: { name: 'Analyse Toux', categoryId: postOp.id } },
+        update: {},
+        create: {
+            name: 'Analyse Toux',
+            categoryId: postOp.id,
+            type: 'AUDIO',
+            isFree: false,
+            config: {
+                maxSec: 30,
+                info: "Enregistrez votre toux dans un endroit calme."
+            }
+        }
+    });
+
+    // 2. Mode Libre (Outils génériques pour tout le monde)
+    const modeLibre = await prisma.category.upsert({
         where: { name: 'Libre' },
         update: {},
         create: { name: 'Libre' }
     });
 
-    for (const toolData of allTools) {
+    // On ajoute des outils simples au mode libre
+    const freeTools = ['Poids', 'Fatigue', 'Humeur'];
+    for (const tool of freeTools) {
         await prisma.tool.upsert({
-            where: {
-                name_categoryId: {
-                    name: toolData.name,
-                    categoryId: libreCategory.id
-                }
-            },
+            where: { name_categoryId: { name: tool, categoryId: modeLibre.id } },
             update: {},
             create: {
-                ...toolData,
-                categoryId: libreCategory.id,
-                isFree: true
+                name: tool,
+                categoryId: modeLibre.id,
+                type: 'NOTE_GENERAL',
+                isFree: true,
+                config: { info: `Suivi de : ${tool}` }
             }
         });
     }
 
-    console.log('Seed terminé.');
-    console.log(`Modules créés: ${modules.length}`);
-    console.log(`Outils totaux: ${allTools.length}`);
-    console.log(`Libre: ${allTools.length} outils disponibles`);
+    console.log('--- Seed terminé avec succès ! ---');
 }
 
-seed()
-    .catch((error) => {
-        console.error('Erreur seed:', error);
+runSeed()
+    .catch(e => {
+        console.error('Erreur lors du seed :', e);
         process.exit(1);
     })
-    .finally(async () => {
-        await prisma.$disconnect();
-    });
+    .finally(() => prisma.$disconnect());

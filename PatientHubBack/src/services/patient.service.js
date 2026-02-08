@@ -25,16 +25,13 @@ const PatientService = {
                 role: true,
                 profile: true,
                 settings: true,
-                emailVerified: true,
-                termsAccepted: true,
-                createdAt: true,
-                updatedAt: true,
-                deletedAt: true
+                createdAt: true
             }
         });
 
-        if (!patient) throw new Error("Patient non trouvé");
-        if (patient.deletedAt) throw new Error("Compte supprimé");
+        if (!patient || patient.deletedAt) {
+            throw new Error("Patient introuvable");
+        }
 
         return patient;
     },
