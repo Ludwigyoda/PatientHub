@@ -1,93 +1,119 @@
 import prisma from '../lib/prisma.js';
 
-/**
- * Script de remplissage de la base de données (Seed)
- * Permet de créer les catégories et outils par défaut pour PatientHub.
- */
 async function runSeed() {
-    console.log('--- Initialisation des données ---');
+    console.log('Seed lancé');
 
-    // 1. Catégorie Post-Op (Les outils indispensables après une chirurgie)
-    const postOp = await prisma.category.upsert({
-        where: { name: 'Post-Opératoire' },
-        update: {},
-        create: { name: 'Post-Opératoire' }
+
+    let postOp = await prisma.category.findUnique({
+        where: { name: 'Post-Opératoire' }
+    }
+    );
+
+
+    if (!postOp) {
+        postOp = await prisma.category.create({
+            data: { name: 'Post-Opératoire' }
+        });
+        console.log('Categorie cree');
+    }
+
+    // Outils pour la categorie Post-Op
+    // On check si Douleur existe
+    const toolDouleur = await prisma.tool.findFirst({
+        where: { name: 'Douleur', categoryId: postOp.id }
     });
-
-    await prisma.tool.upsert({
-        where: { name_categoryId: { name: 'Douleur', categoryId: postOp.id } },
-        update: {},
-        create: {
-            name: 'Douleur',
-            categoryId: postOp.id,
-            type: 'NOTE_GENERAL',
-            isFree: false,
-            config: {
-                info: "Notez votre niveau de douleur (0 à 10).",
-                placeholder: "Où avez-vous mal précisément ?"
-            }
-        }
-    });
-
-    await prisma.tool.upsert({
-        where: { name_categoryId: { name: 'Plaie', categoryId: postOp.id } },
-        update: {},
-        create: {
-            name: 'Plaie',
-            categoryId: postOp.id,
-            type: 'PHOTO',
-            isFree: false,
-            config: {
-                info: "Prenez une photo de votre pansement ou cicatrice.",
-                overlay: true
-            }
-        }
-    });
-
-    await prisma.tool.upsert({
-        where: { name_categoryId: { name: 'Analyse Toux', categoryId: postOp.id } },
-        update: {},
-        create: {
-            name: 'Analyse Toux',
-            categoryId: postOp.id,
-            type: 'AUDIO',
-            isFree: false,
-            config: {
-                maxSec: 30,
-                info: "Enregistrez votre toux dans un endroit calme."
-            }
-        }
-    });
-
-    // 2. Mode Libre (Outils génériques pour tout le monde)
-    const modeLibre = await prisma.category.upsert({
-        where: { name: 'Libre' },
-        update: {},
-        create: { name: 'Libre' }
-    });
-
-    // On ajoute des outils simples au mode libre
-    const freeTools = ['Poids', 'Fatigue', 'Humeur'];
-    for (const tool of freeTools) {
-        await prisma.tool.upsert({
-            where: { name_categoryId: { name: tool, categoryId: modeLibre.id } },
-            update: {},
-            create: {
-                name: tool,
-                categoryId: modeLibre.id,
+    if (!toolDouleur) {
+        await prisma.tool.create({
+            data: {
+                name: 'Douleur',
+                categoryId: postOp.id,
                 type: 'NOTE_GENERAL',
-                isFree: true,
-                config: { info: `Suivi de : ${tool}` }
+                isFree: false,
+                config: {
+                    info: "Notez votre niveau de douleur 0 à 10.",
+                    placeholder: "Où avez-vous mal ?"
+                }
             }
         });
     }
 
-    console.log('--- Seed terminé avec succès ! ---');
-}
 
-runSeed()
-    .catch(e => {
-        console.error('Erreur lors du seed :', e);
-        process.exit(1);
-    })
-    .finally(() => prisma.$disconnect());
+    const toolPlaie = await prisma.tool.findFirst({
+        where: { name: 'Plaie', categoryId: postOp.id }
+    });
+    if (!toolPlaie) {
+        await prisma.tool.create({
+            data: {
+                name: 'Plaie',
+                categoryId: postOp.id,
+                type: 'PHOTO',
+                isFree: false,
+                config: {
+                    info: "Prenez une photo de votre blessure ou cicatrice.",
+                    overlay: true
+                }
+            }
+        });
+    }
+
+
+    const toolToux = await prisma.tool.findFirst({
+        where: { name: 'Analyse Toux', categoryId: postOp.id }
+    });
+    if (!toolToux) {
+        await prisma.tool.create({
+            data: {
+                name: 'Analyse Toux',
+                categoryId: postOp.id,
+                type: 'AUDIO',
+                isFree: false,
+                config: {
+                    maxSec: 30,
+                    info: "Enregistrez votre toux dans un endroit calme."
+                }
+            }
+        });
+    }
+
+
+    let modeLibre = await prisma.category.findUnique({
+        where: { name: 'Libre' }
+    });
+    if (!modeLibre) {
+        modeLibre = await prisma.category.create({
+            data: { name: 'Libre' }
+        });
+
+    }
+
+    const freeTools = ['Poids', 'Fatigue', 'Humeur'];
+    for (let i = 0; i < freeTools.length; i++) {
+        const t = freeTools[i];
+        const exists = await prisma.tool.findFirst({
+            where: { name: t, categoryId: modeLibre.id }
+        });
+        if (!exists) {
+            await prisma.tool.create({
+                data: {
+                    name: t,
+                    categoryId: modeLibre.id,
+                    type: 'NOTE_GENERAL',
+                    isFree: true,
+                    config: { info: `Suivi de : ${tool}` }
+                }
+            });
+        }
+
+        console.log('Seed finiee !');
+    }
+
+    runSeed()
+
+        .catch(e => {
+            console.error('Oups erreur seed :', e);
+            process.exit(1);
+        })
+        .finally(async () => {
+            await prisma.$disconnect();
+        });
+

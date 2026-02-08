@@ -15,27 +15,24 @@ const ToolService = {
             where: { id, deletedAt: null },
             include: { category: true }
         });
-        if (!tool) throw new Error("Outil introuvable");
+        if (!tool) throw new Error("Outil non trouvé");
         return tool;
     },
 
     create: async (data) => {
-        const { name, categoryId, type, config, isFree, order } = data;
+        const { name, categoryId, type, config } = data;
 
-        if (!name?.trim()) throw new Error("Le nom est obligatoire");
-        if (!categoryId) throw new Error("La catégorie est obligatoire");
-        if (!type) throw new Error("Le type est obligatoire");
-
-        await CategoryService.getOne(categoryId);
+        if (!name || !categoryId || !type) {
+            throw new Error("Champs obligatoires manquants");
+        }
 
         return prisma.tool.create({
             data: {
                 name: name.trim(),
                 categoryId,
                 type,
-                config: config ?? {},
-                isFree: isFree ?? true,
-                order: order != null ? Number(order) : 0
+                config: config || {},
+                isFree: data.isFree ?? true
             }
         });
     },

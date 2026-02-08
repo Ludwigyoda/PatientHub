@@ -27,13 +27,13 @@ export function authentificationMiddleware() {
 export function authorizeMiddleware(...roles) {
     return async (req, res, next) => {
         if (!req.user) {
-            res.sendStatus(401); // unauthorized
+            res.sendStatus(401);
 
             return;
         }
 
         if (roles.length > 0 && !roles.includes(req.user.role)) {
-            res.sendStatus(403); // forbidden
+            res.sendStatus(403);
             return;
         }
 

@@ -11,21 +11,35 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Routes principales
 app.use('/auth', authRouter);
 app.use('/categories', categoryRouter);
 app.use('/tools', toolRouter);
 app.use('/patients', patientRouter);
 app.use('/entries', entryRouter);
 app.use('/news', newsRouter);
+app.use('/specificity', newsRouter);
 
 app.get('/', (req, res) => {
-    res.json({ message: "PatientHub est lancée" });
-});
+    res.json({
+        status: "on",
+        api: "PatientHub"
+    });
+}
+);
+
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Le serveur est lancé sur le port : ${PORT}`);
+
 });
 
+
+
+
 export default app;
+
+
+

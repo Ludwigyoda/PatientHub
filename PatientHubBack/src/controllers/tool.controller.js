@@ -3,14 +3,8 @@ import ToolService from "../services/tool.service.js";
 const ToolController = {
     getAll: async (req, res) => {
         try {
-            let tools;
-            // Si on est authentifié en tant que patient, on filtre selon ses réglages
-            if (req.user && req.user.role !== 'ADMIN') {
-                tools = await ToolService.getForPatient(req.user.id);
-            } else {
-                tools = await ToolService.getAll();
-            }
-            res.json(tools);
+            const malisteValue = await ToolService.getAll();
+            res.json(malisteValue);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
@@ -30,7 +24,7 @@ const ToolController = {
             const newTool = await ToolService.create(req.body);
             res.status(200).json(newTool);
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            res.status(400).json({ error: "Probleme creation outil" });
         }
     },
 
