@@ -116,4 +116,4 @@ async function runSeed() {
         .finally(async () => {
             await prisma.$disconnect();
         });
-
+    }
