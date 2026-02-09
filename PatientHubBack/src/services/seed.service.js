@@ -31,13 +31,13 @@ async function runSeed() {
                 isFree: false,
                 config: {
                     info: "Notez votre niveau de douleur 0 à 10.",
-                    placeholder: "Où avez-vous mal ?"
+                    placeholder: "Où avez-vous mal ?" //faire un choix direct ? ou choisir a la création du module
                 }
             }
         });
     }
 
-
+        //Tool plaie Test front hybrid data drive
     const toolPlaie = await prisma.tool.findFirst({
         where: { name: 'Plaie', categoryId: postOp.id }
     });
