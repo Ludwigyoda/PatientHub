@@ -40,10 +40,8 @@ const PatientController = {
 
             const updatedPatient = await PatientService.update(req.params.id, req.body);
             res.json(updatedPatient);
-        } catch (error) {
-            res.status(400).json({ error: error.message });
-        }
-    },
+
+    }},
 
     remove: async (req, res) => {
         try {

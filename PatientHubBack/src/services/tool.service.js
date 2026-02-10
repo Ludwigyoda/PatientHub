@@ -1,4 +1,4 @@
-import prisma from "../../prisma/prisma.js";
+import prisma from "../prisma/prisma.js";
 import CategoryService from "./category.service.js";
 
 const ToolService = {
@@ -19,7 +19,7 @@ const ToolService = {
         if (!tool) throw new Error("Outil non trouvé");
         return tool;
     },
-   
+
     create: async (data) => {
         const { name, categoryId, type, config } = data;
 

@@ -1,5 +1,5 @@
-import prisma from '../lib/prisma.js';
-
+import prisma from "../prisma/prisma.js";
+// code pas fonctionnelle
 async function runSeed() {
     console.log('Seed lancé');
 
@@ -37,7 +37,7 @@ async function runSeed() {
         });
     }
 
-        //Tool plaie Test front hybrid data drive
+    //Tool plaie Test front hybrid data drive
     const toolPlaie = await prisma.tool.findFirst({
         where: { name: 'Plaie', categoryId: postOp.id }
     });
@@ -105,4 +105,5 @@ async function runSeed() {
         }
 
         console.log('Seed finiee !');
-    };};
+    };
+};

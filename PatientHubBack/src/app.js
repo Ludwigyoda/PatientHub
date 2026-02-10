@@ -17,8 +17,8 @@ app.use('/categories', categoryRouter);
 app.use('/tools', toolRouter);
 app.use('/patients', patientRouter);
 app.use('/entries', entryRouter);
-app.use('/news', newsRouter);
-app.use('/specificity', newsRouter);
+// app.use('/news', newsRouter);
+// app.use('/specificity', newsRouter);
 
 app.get('/', (req, res) => {
     res.json({
