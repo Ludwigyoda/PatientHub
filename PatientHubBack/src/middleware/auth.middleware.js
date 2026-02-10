@@ -33,7 +33,7 @@ export function authorizeMiddleware(...roles) {
         }
 
         if (roles.length > 0 && !roles.includes(req.user.role)) {
-            res.sendStatus(403);
+            res.sendStatus(400);
             return;
         }
 
