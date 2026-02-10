@@ -2,6 +2,7 @@ import prisma from "../lib/prisma.js";
 import CategoryService from "./category.service.js";
 
 const ToolService = {
+    // 2 phase 1 tout le monde a les même outils puis on affine
     getAll: async () => {
         return prisma.tool.findMany({
             where: { deletedAt: null },

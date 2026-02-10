@@ -1,16 +1,9 @@
-écran dashboard global a faire
+React fetch → Express → Prisma → data personnalisée → render.
 
-fetch front from db 
-service général pour les compo
+- A renomée tool symptôme -> diminuer l'aspect douleurs et rajouter les explications
 
-execute Prisma -> tools
+- Création du composant individuel -> format générique outils -> dashboard -> composant -> détailles Pages
 
+- Datadrive complet ? 
+GraphQl
 
-
-
-Création du composant individuel
-Json-> array -> Map -> composant 
-
-Render global pour affichage 
-
-A faire -> format générique outils -> dashboard -> Pages

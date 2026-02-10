@@ -1,4 +1,4 @@
-// A rennomer tool symptôme -> diminuer l'aspect douleurs et rajouter explication
+// A rennomer tool symptôme -> diminuer l'aspect douleurs et rajouter les explications
 
 interface ComponentsToolDouleur{
     info: String,
