@@ -37,7 +37,7 @@ async function runSeed() {
         });
     }
 
-        //Tool plaie Test front hybrid data drive
+    //Tool plaie Test front hybrid data drive
     const toolPlaie = await prisma.tool.findFirst({
         where: { name: 'Plaie', categoryId: postOp.id }
     });
@@ -105,15 +105,4 @@ async function runSeed() {
         }
 
         console.log('Seed finiee !');
-    }
-
-    runSeed()
-
-        .catch(e => {
-            console.error('Oups erreur seed :', e);
-            process.exit(1);
-        })
-        .finally(async () => {
-            await prisma.$disconnect();
-        });
     }
