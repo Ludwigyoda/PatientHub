@@ -7,10 +7,9 @@ export const authService = {
         const { token, user } = réponse.data
         await AsyncStorage.setItem('token', token)
         await AsyncStorage.setItem('user', JSON.stringify(user))
-        return user
-    }
+        return {user}
+    }, 
 
-    // register 
     // logout 
     // get Token 
 
