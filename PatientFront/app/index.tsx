@@ -7,9 +7,12 @@ export default function Index() {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        backgroundColor: "#007AFF", // Bleu simple demandé
       }}
     >
-      <Text>Patient Hub</Text>
+      <Text style={{ fontSize: 32, fontWeight: "bold", color: "white" }}>
+        Patient Hub
+      </Text>
     </View>
   );
 }
