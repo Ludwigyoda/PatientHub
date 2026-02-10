@@ -1,4 +1,4 @@
-import prisma from "../lib/prisma.js";
+import prisma from "../../prisma/prisma.js";
 import CategoryService from "./category.service.js";
 
 const ToolService = {
@@ -18,24 +18,24 @@ const ToolService = {
         if (!tool) throw new Error("Outil non trouvé");
         return tool;
     },
+    // ce serais bien mais pas possible 
+    // create: async (data) => {
+    //     const { name, categoryId, type, config } = data;
 
-    create: async (data) => {
-        const { name, categoryId, type, config } = data;
+    //     if (!name || !categoryId || !type) {
+    //         throw new Error("Champs obligatoires manquants");
+    //     }
 
-        if (!name || !categoryId || !type) {
-            throw new Error("Champs obligatoires manquants");
-        }
-
-        return prisma.tool.create({
-            data: {
-                name: name.trim(),
-                categoryId,
-                type,
-                config: config || {},
-                isFree: data.isFree ?? true
-            }
-        });
-    },
+    //     return prisma.tool.create({
+    //         data: {
+    //             name: name.trim(),
+    //             categoryId,
+    //             type,
+    //             config: config || {},
+    //             isFree: data.isFree ?? true
+    //         }
+    //     });
+    // },
 
     update: async (id, data) => {
         await ToolService.getOne(id);
