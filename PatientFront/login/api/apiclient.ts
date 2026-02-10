@@ -1,7 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'; // doit etre installé : npm install @react-native-async-storage/async-storage
-import axios from 'axios'; // doit etre installé : npm install axios
-import { router } from 'expo-router'; // disponible avec expo-router
-import { jwtDecode } from 'jwt-decode'; // doit etre installé : npm install jwt-decode
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
+import { jwtDecode } from 'jwt-decode';
 
 
 
@@ -38,7 +37,7 @@ const apiClient = axios.create({
 })
 apiClient.interceptors.request.use(
     async (request) => {
-        const token = localStorage.getItem('token')
+        const token = await AsyncStorage.getItem('token')
 
         if (token) {
             if (isTokenValid(token)) {
