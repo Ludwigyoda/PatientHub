@@ -29,25 +29,7 @@ const CategoryService = {
         });
     },
 
-    update: async (id, data) => {
-        await CategoryService.getOne(id);
-        const { name, order } = data;
-        const updateData = {};
-        if (name !== undefined) updateData.name;
-        if (order !== undefined) updateData.order;
-        return prisma.category.update({
-            where: { id },
-            data: updateData
-        });
-    },
 
-    remove: async (id) => {
-        await CategoryService.getOne(id);
-        return prisma.category.update({
-            where: { id },
-            data: { deletedAt: new Date() }
-        });
-    }
 };
 
 export default CategoryService;

@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./PatientHubBack
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=postgresql://patienthub:Taranis67@db:5432/patienthub_db
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+
+
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=patienthub
+      - POSTGRES_PASSWORD=Taranis67
+      - POSTGRES_DB=patienthub_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+
+volumes:
+  db-data:
