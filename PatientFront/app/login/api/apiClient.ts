@@ -2,6 +2,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios'
+import { Platform } from 'react-native';
+
+
 
 
 const isTokenValid = (token: string): boolean => {
@@ -29,7 +32,7 @@ const cleanToken = async () => {
 }
 
 const apiClient = axios.create({
-    baseURL: 'http://localhost:8080/api',
+    baseURL: Platform.OS === 'android' ? 'http://10.0.2.2:8080/api' : 'http://localhost:8080/api',
     headers: {
         'Content-type': 'application/json'
     }
