@@ -1,18 +1,58 @@
+# Version de la syntaxe Docker Compose
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:15
-    container_name: patienthub-postgres
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: patientHub
+  # Service API (Votre backend Express)
+  api:
+    # Construit l'image à partir du Dockerfile dans le dossier courant (.)
+    build: .
+    
+    # Mappe le port 8080 du PC (hôte) vers le port 8080 du conteneur
     ports:
-      - "5433:5432"
+      - "8080:8080"
+    
+    # Variables d'environnement pour l'application
+    environment:
+      # URL de connexion à la BDD (notez 'db' comme nom d'hôte, c'est le nom du service en bas)
+      - DATABASE_URL=postgresql://user:password@db:5432/patienthub?schema=public
+      - JWT_SECRET=change_this_secret_locally
+      - JWT_ISSUER=patienthub
+      - JWT_AUDIENCE=patienthub
+      - PORT=8080
+    
+    # ## NE PAS SUPPRIMER ("Bind Mounts")
+    # Connecte votre dossier Windows au conteneur.
+    # Permet de modifier le code et de voir les changements sans reconstruire l'image.
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules # Protège les node_modules du conteneur contre l'écrasement par Windows
+    
+    # Attend que la BDD soit lancée avant de démarrer l'API
+    depends_on:
+      - db
 
+  # Service Base de Données (PostgreSQL)
+  db:
+    # Utilise l'image officielle PostgreSQL (version 15)
+    image: postgres:15-alpine
+    
+    # Redémarre automatiquement en cas de crash
+    restart: always
+    
+    # Identifiants pour la BDD (doivent matcher DATABASE_URL plus haut)
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=patienthub
+    
+    # Expose le port 5432 pour pouvoir s'y connecter avec un outil externe (DBeaver, etc.)
+    ports:
+      - "5432:5432"
+    
+    # Volume persistant pour ne pas perdre les données quand on éteint le conteneur
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+# Déclaration des volumes
 volumes:
-  postgres_data:
+  db-data:
