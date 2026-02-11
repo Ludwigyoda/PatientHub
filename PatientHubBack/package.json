@@ -7,6 +7,7 @@
   "author": "ludwig",
   "license": "ISC",
   "scripts": {
+    "start": "node src/app.js",
     "dev": "node src/app.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev --name init",

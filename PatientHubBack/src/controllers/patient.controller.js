@@ -19,7 +19,7 @@ const PatientController = {
             const patient = await PatientService.getOne(req.params.id);
             res.json(patient);
         } catch (error) {
-            res.status(404).json({ error: error.message });
+            res.status(40).json({ error: error.message });
         }
     },
 
@@ -28,7 +28,7 @@ const PatientController = {
             const patient = await PatientService.getOne(req.user.id);
             res.json(patient);
         } catch (error) {
-            res.status(404).json({ error: error.message });
+            res.status(40).json({ error: error.message });
         }
     },
 
@@ -40,8 +40,11 @@ const PatientController = {
 
             const updatedPatient = await PatientService.update(req.params.id, req.body);
             res.json(updatedPatient);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
 
-    }},
+    },
 
     remove: async (req, res) => {
         try {
@@ -54,6 +57,8 @@ const PatientController = {
         } catch (error) {
             res.status(400).json({ error: error.message });
         }
+
+
     }
 };
 

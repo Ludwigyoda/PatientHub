@@ -18,7 +18,7 @@ const EntryController = {
             }
             res.json(entry);
         } catch (error) {
-            res.status(404).json({ error: error.message });
+            res.status(40).json({ error: error.message });
         }
     },
 

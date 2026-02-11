@@ -7,3 +7,16 @@ React fetch → Express → Prisma → data personnalisée → render.
 - Datadrive complet ? 
 GraphQl
 
+A la fin de la prod on peut tout conteneurisé 
+
+Interface Non datadrive: 
+A FAIRE 
+- Navbar 
+- Header 
+- Loginform 
+- Registerform 
+- settings 
+Interface datadrive 
+
+Grille de module 
+outils libre

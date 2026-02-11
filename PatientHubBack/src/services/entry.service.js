@@ -22,8 +22,8 @@ const EntryService = {
     create: async (data, patientId) => {
         const { toolId, data: entryData, measuredAt } = data;
 
-        if (!toolId) throw new Error("L'outil est obligatoire");
-        if (!entryData) throw new Error("Les données sont obligatoires");
+        if (!toolId) throw new Error("toolId manquant");
+        if (!entryData) throw new Error("data manquant");
 
         await ToolService.getOne(toolId);
 
@@ -40,8 +40,9 @@ const EntryService = {
     update: async (id, data, patientId) => {
         const entry = await EntryService.getOne(id);
 
+        // on peut modifier que ses propres entries
         if (entry.patientId !== patientId) {
-            throw new Error("Accès interdit à cette entrée");
+            throw new Error("Cette entrée ne t'appartient pas");
         }
 
         const { data: entryData, measuredAt } = data;
@@ -60,7 +61,7 @@ const EntryService = {
         const entry = await EntryService.getOne(id);
 
         if (entry.patientId !== patientId) {
-            throw new Error("Accès interdit à cette entrée");
+            throw new Error("You should not pass");
         }
 
         return prisma.entry.update({
