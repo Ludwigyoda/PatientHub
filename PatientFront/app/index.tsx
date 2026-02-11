@@ -2,6 +2,7 @@ import { Text, View } from "react-native";
 
 export default function Index() {
   return (
+<view> <navigation> </navigation></view>
     <View
       style={{
         flex: 1,

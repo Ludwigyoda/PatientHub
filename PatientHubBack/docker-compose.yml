@@ -1,58 +1,41 @@
-# Version de la syntaxe Docker Compose
 version: '3.8'
 
 services:
-  # Service API (Votre backend Express)
   api:
-    # Construit l'image à partir du Dockerfile dans le dossier courant (.)
     build: .
-    
-    # Mappe le port 8080 du PC (hôte) vers le port 8080 du conteneur
     ports:
-      - "8080:8080"
-    
-    # Variables d'environnement pour l'application
+      - "${PORT}:${PORT}"
     environment:
-      # URL de connexion à la BDD (notez 'db' comme nom d'hôte, c'est le nom du service en bas)
-      - DATABASE_URL=postgresql://user:password@db:5432/patienthub?schema=public
-      - JWT_SECRET=change_this_secret_locally
-      - JWT_ISSUER=patienthub
-      - JWT_AUDIENCE=patienthub
-      - PORT=8080
+      - DATABASE_URL=${DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_ISSUER=${JWT_ISSUER}
+      - JWT_AUDIENCE=${JWT_AUDIENCE}
+      - PORT=${PORT}
     
-    # ## NE PAS SUPPRIMER ("Bind Mounts")
-    # Connecte votre dossier Windows au conteneur.
-    # Permet de modifier le code et de voir les changements sans reconstruire l'image.
+    ## ne pas supprimer
     volumes:
       - ./:/usr/src/app
-      - /usr/src/app/node_modules # Protège les node_modules du conteneur contre l'écrasement par Windows
-    
-    # Attend que la BDD soit lancée avant de démarrer l'API
+      - /usr/src/app/node_modules
     depends_on:
       - db
+    # Charge le fichier .env pour que Docker compose connaisse les valeurs
+    env_file:
+      - ../.env
 
-  # Service Base de Données (PostgreSQL)
   db:
-    # Utilise l'image officielle PostgreSQL (version 15)
     image: postgres:15-alpine
-    
-    # Redémarre automatiquement en cas de crash
     restart: always
-    
-    # Identifiants pour la BDD (doivent matcher DATABASE_URL plus haut)
     environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=patienthub
-    
-    # Expose le port 5432 pour pouvoir s'y connecter avec un outil externe (DBeaver, etc.)
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     ports:
       - "5432:5432"
-    
-    # Volume persistant pour ne pas perdre les données quand on éteint le conteneur
     volumes:
       - db-data:/var/lib/postgresql/data
+    # Charge le fichier .env ici aussi
+    env_file:
+      - ../.env
 
-# Déclaration des volumes
 volumes:
   db-data:
