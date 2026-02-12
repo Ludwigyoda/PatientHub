@@ -6,6 +6,9 @@
   "main": "src/app.js",
   "author": "ludwig",
   "license": "ISC",
+  "prisma": {
+    "schema": "src/prisma/schema.prisma"
+  },
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
