@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 import { View } from "react-native";
-import Navbar from "./dashboard patient/components/navigation/navigation";
+import Navbar from "./dashboard patient/components/navigation/NavBar";
 // import Headers from "./dashboard patient/components/headers";
 
 export default function RootLayout() {
