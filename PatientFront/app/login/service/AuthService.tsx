@@ -10,9 +10,25 @@ export const authService = {
         return { cleanPatient }
     },
 
-    // logout
-    // register
-    // get Token
+    register : async ( username : string , email : string , password : string ) => {
+        const response = await apiClient.post('/auth/register', {username, email , password});
 
-    // Admin easter egg login ? ABANDON TOTAL
+        const { patient: cleanPatient, token } = response.data
+        await AsyncStorage.setItem('token', token)
+        await AsyncStorage.setItem('user', JSON.stringify(cleanPatient))
+        return { cleanPatient }
+
+    },
+
+    logout : async () => {
+        await AsyncStorage.removeItem("token");
+        await AsyncStorage.removeItem("user");
+
+    },
+
+    getToken : async () => {
+        const token = await AsyncStorage.getItem('token');
+        return token;
+    }
+
 };
