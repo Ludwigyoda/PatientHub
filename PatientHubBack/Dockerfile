@@ -15,4 +15,4 @@ ENV JWT_SECRET=secret_BOB
 ENV JWT_ISSUER=patienthub
 ENV JWT_AUDIENCE=patienthub-users
 #trop d'eereur a vérifie
-CMD ["sh", "-c", "npx prisma migrate deploy --schema=./src/prisma/schema.prisma && npm start"]
+CMD ["npm", "start"]
