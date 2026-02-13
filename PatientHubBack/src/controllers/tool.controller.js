@@ -19,32 +19,7 @@ const ToolController = {
         }
     },
 
-    create: async (req, res) => {
-        try {
-            const newTool = await ToolService.create(req.body);
-            res.status(200).json(newTool);
-        } catch (error) {
-            res.status(400).json({ error: "Probleme creation outil" });
-        }
-    },
-
-    update: async (req, res) => {
-        try {
-            const updatedTool = await ToolService.update(req.params.id, req.body);
-            res.json(updatedTool);
-        } catch (error) {
-            res.status(400).json({ error: error.message });
-        }
-    },
-
-    remove: async (req, res) => {
-        try {
-            await ToolService.remove(req.params.id);
-            res.json({ message: "Outil supprimé" });
-        } catch (error) {
-            res.status(400).json({ error: error.message });
-        }
-    }
+    
 };
 
 export default ToolController;

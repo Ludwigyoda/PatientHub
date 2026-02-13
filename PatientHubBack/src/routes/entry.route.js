@@ -9,8 +9,6 @@ entryRouter.use(authorizeMiddleware());
 
 entryRouter.get("/", EntryController.getAll);
 entryRouter.get("/:id", EntryController.getOne);
-entryRouter.post("/", EntryController.create);
-entryRouter.put("/:id", EntryController.update);
-entryRouter.delete("/:id", EntryController.remove);
+entryRouter.post("/", EntryController.create)
 
 export default entryRouter;
