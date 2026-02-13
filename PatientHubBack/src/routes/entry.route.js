@@ -8,7 +8,7 @@ entryRouter.use(authentificationMiddleware());
 entryRouter.use(authorizeMiddleware());
 
 entryRouter.get("/", EntryController.getAll);
-entryRouter.get("/:id", EntryController.getOne);
+// entryRouter.get("/:id", EntryController.getOne);
 entryRouter.post("/", EntryController.create)
 
 export default entryRouter;

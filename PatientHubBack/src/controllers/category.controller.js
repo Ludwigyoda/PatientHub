@@ -18,7 +18,14 @@ const CategoryController = {
             res.status(400).json({ error: error.message });
         }
     },
-
+    create: async (req, res) => {
+    try {
+        const newCategory = await CategoryService.create(req.body);
+        res.status(201).json(newCategory);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+},
 };
 
 export default CategoryController;
