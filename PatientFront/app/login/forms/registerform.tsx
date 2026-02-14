@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 import { userAdd } from "../modèle/userAdd";
 
-function UserAddForm({user,setUser} : {user : userAdd  , setUser : React.Dispatch<React.SetStateAction<userAdd>>}) {
+function UserAddForm({user,setUser, onSuccess} : {user : userAdd  , setUser : React.Dispatch<React.SetStateAction<userAdd>>, onSuccess? : () => void}) {
 
  const [error , setError] = useState<string>("")
 
@@ -37,6 +37,7 @@ console.log(field + " - " + value);
     async function sendForm(){
         console.log(user);
         
+        
         if(!user) return;
        
 
@@ -49,6 +50,7 @@ console.log(field + " - " + value);
 
    console.log('Register Ok', NewUser);
    alert("compte créé")
+   onSuccess?.();
             }catch(e) {
                 console.error('register error', e);
                 setError('Errer')
