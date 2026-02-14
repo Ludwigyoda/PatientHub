@@ -49,7 +49,7 @@ function Navbar() {
             <Link href="/pages/historique">
                 <Text>Historique</Text> </Link>
 
-            <Link href="/pages/profil">
+            <Link href="/pages/profilOption">
                 <Text>Profil</Text> </Link> </View>
     )
 }
