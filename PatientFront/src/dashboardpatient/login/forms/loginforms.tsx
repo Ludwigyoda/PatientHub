@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     button: {
-        backgroundColor: '#007AFF',
+        backgroundColor: '#3b91eeff', // bleux intense bouton bleux vert pour le reste ? 
         padding: 15,
         borderRadius: 8,
         alignItems: 'center',
