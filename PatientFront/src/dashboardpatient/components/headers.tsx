@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Pressable, Modal, ScrollView } from 'react-native';
 import { useAuth } from '../../../hooks/useAuth';
-import LoginForms from '@/app/login/forms/loginforms';
-import RegisterForm from '@/app/login/forms/registerform';
-import { userAdd } from '@/app/login/modèle/userAdd';
+import LoginForms from '@/dashboard patient/login/forms/loginforms';
+import RegisterForm from '@/dashboard patient/login/forms/registerform';
+import { userAdd } from '@/dashboard patient/login/modele/userAdd';
 
 export default function Headers() {
     const { user, logout, isAuthenticated } = useAuth();
