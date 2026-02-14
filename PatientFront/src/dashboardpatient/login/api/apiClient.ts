@@ -32,7 +32,7 @@ const cleanToken = async () => {
 }
 
 const apiClient = axios.create({
-    baseURL: Platform.OS === 'android' ? 'http://10.0.2.2:8080/api' : 'http://localhost:8080/api',
+    baseURL: Platform.OS === 'android' ? 'http://10.0.2.2:8080' : 'http://localhost:8080',
     headers: {
         'Content-type': 'application/json'
     }
